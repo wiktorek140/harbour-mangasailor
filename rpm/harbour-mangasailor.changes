@@ -8,7 +8,17 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Sat Mar 14 2015 Billy Halley <ziobilly94@gmail.com> 0.0.1-1
-- Initial Release
+* Tue Mar 31 2015 Billy Halley <ziobilly94@gmail.com> 0.2.1-1
+- v0.2.1-1
+-- Fixed "Get Updates"
 
+- v0.2.0-2
+-- Improved reading, now is possible to navigate through pages and chapters
+-- Added old chapters list in drawer while reading manga and in attached page of manga description page
+-- Now "new" mangas are displayed in list
+-- Removed icon for hot and new, replaced with texts
+-- - Little Issue: Loading a chapter can't be aborted, you can go back only when chapter is fully loaded
+-- - Known Bug: Sometimes loading never ends, even after chapter is fully loaded
 
+- v0.1.0-1
+-- Added Manga page with description

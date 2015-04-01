@@ -1,4 +1,4 @@
-#include "../lib/fileIO.h"
+#include "fileIO.h"
 #include <QDir>
 #include <QStringList>
 #include <QStandardPaths>
@@ -10,8 +10,8 @@ FileIO::FileIO(QObject *parent) :
 
 
 //Your custom function
-void FileIO::write(const QString &filename, const QString &inputText) {
-    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+void FileIO::writeConfig(const QString &filename, const QString &inputText) {
+    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/harbour-mangasailor");
     QDir dir(dataLocation);
     if (!dir.exists())
         dir.mkpath(".");
@@ -25,8 +25,8 @@ void FileIO::write(const QString &filename, const QString &inputText) {
     return;
 }
 
-QString FileIO::read(const QString &filename) {
-    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+QString FileIO::readConfig(const QString &filename) {
+    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/harbour-mangasailor");
     QDir dir(dataLocation);
     if (!dir.exists())
         dir.mkpath(".");
@@ -47,10 +47,10 @@ QString FileIO::read(const QString &filename) {
     return outputText;
 }
 
-void FileIO::save(const QString &property, const QStringList &input) {
+void FileIO::saveConfig(const QString &property, const QStringList &input) {
     QTextStream cout(stdout);
 
-    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/harbour-mangasailor");
     QDir dir(dataLocation);
     if (!dir.exists())
         dir.mkpath(".");
@@ -69,10 +69,10 @@ void FileIO::save(const QString &property, const QStringList &input) {
     return;
 }
 
-QStringList FileIO::load(const QString &property) {
+QStringList FileIO::loadConfig(const QString &property) {
     QTextStream cout(stdout);
 
-    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    QString dataLocation(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/harbour-mangasailor");
     QDir dir(dataLocation);
     if (!dir.exists())
         dir.mkpath(".");

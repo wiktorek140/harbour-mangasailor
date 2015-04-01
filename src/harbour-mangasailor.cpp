@@ -33,6 +33,7 @@
 #include "lib/mangareader.h"
 #include "lib/getHTML.h"
 #include "lib/fileIO.h"
+#include "lib/cachemanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MangaReader, 1>("harbour.mangasailor.MangaReader", 1, 0, "MangaReader");
     qmlRegisterType<GetHTML, 1>("harbour.mangasailor.GetHTML", 1, 0, "GetHTML");
     qmlRegisterType<FileIO, 1>("harbour.mangasailor.FileIO", 1, 0, "FileIO");
-
+    qmlRegisterType<CacheManager, 1>("harbour.mangasailor.CacheManager", 1, 0, "CacheManager");
 
     return SailfishApp::main(argc, argv);
 }

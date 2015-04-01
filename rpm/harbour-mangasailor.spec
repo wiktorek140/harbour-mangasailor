@@ -13,7 +13,7 @@ Name:       harbour-mangasailor
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    MangaSailor
-Version:    0.0.1
+Version:    0.2.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -29,6 +29,7 @@ BuildRequires:  desktop-file-utils
 
 %description
 MangaSailor is a native app for reading your favourites mangas on your Sailfish device!
+
 
 %prep
 %setup -q -n %{name}-%{version}

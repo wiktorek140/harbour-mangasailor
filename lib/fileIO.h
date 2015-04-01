@@ -12,10 +12,10 @@ class FileIO : public QObject
 public:
     explicit FileIO(QObject *parent = 0);
 
-    Q_INVOKABLE void write(const QString &filename, const QString &inputText);
-    Q_INVOKABLE QString read(const QString &filename);
-    Q_INVOKABLE void save(const QString &property, const QStringList &input);
-    Q_INVOKABLE QStringList load(const QString &property);
+    Q_INVOKABLE void writeConfig(const QString &filename, const QString &inputText);
+    Q_INVOKABLE QString readConfig(const QString &filename);
+    Q_INVOKABLE void saveConfig(const QString &property, const QStringList &input);
+    Q_INVOKABLE QStringList loadConfig(const QString &property);
 
 };
 

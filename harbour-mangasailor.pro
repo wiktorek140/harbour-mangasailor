@@ -17,7 +17,8 @@ CONFIG += sailfishapp
 SOURCES += src/harbour-mangasailor.cpp \
     lib/getHTML.cpp \
     lib/mangareader.cpp \
-    lib/fileIO.cpp
+    lib/fileIO.cpp \
+    lib/cachemanager.cpp
 
 OTHER_FILES += qml/harbour-mangasailor.qml \
     qml/cover/CoverPage.qml \
@@ -29,7 +30,10 @@ OTHER_FILES += qml/harbour-mangasailor.qml \
     qml/pages/ImagePage.qml \
     qml/pages/LatestUpdates.qml \
     qml/pages/hot.png \
-    rpm/harbour-mangasailor.changes
+    rpm/harbour-mangasailor.changes \
+    qml/html.html \
+    qml/pages/MangaPage.qml \
+    qml/pages/ChaptersListPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -44,6 +48,7 @@ TRANSLATIONS += translations/harbour-mangasailor-de.ts
 HEADERS += \
     lib/getHTML.h \
     lib/mangareader.h \
-    lib/fileIO.h
+    lib/fileIO.h \
+    lib/cachemanager.h
 
 QT += core

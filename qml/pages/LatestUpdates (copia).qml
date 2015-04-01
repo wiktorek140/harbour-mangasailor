@@ -33,52 +33,30 @@ import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.GetHTML 1.0
 import harbour.mangasailor.MangaReader 1.0
-import harbour.mangasailor.CacheManager 1.0
 
 
 Page {
     id: page
 
     FileIO { id: fileIO }
-    GetHTML {
-        id: getHTML
-        onHtmlChanged: {
-            if (source === 0){
-                mangaList = mangaReader.mangaList(html)
-                chaptersList = mangaReader.chaptersList(html)
-                linksList = mangaReader.linksList(html)
-                mangalinksList = mangaReader.mangalinksList(html)
-                iconsList = mangaReader.iconsList(html)
-                favouritesList = getFavourites(mangaList,favourites)
-            }
-            refresh()
-        }
-    }
-
+    GetHTML { id: getHTML }
     MangaReader { id: mangaReader }
-    CacheManager { id: cacheManager }
 
-    onStatusChanged: {
-        if ( status === PageStatus.Active ) {
-            getHTML.get("http://www.mangareader.net/latest")
-            //cacheManager.clearCache()
-            refresh()
-        }
-    }
+    //onStatusChanged: { if ( status === PageStatus.Active ) listView.enabled = true }
 
     property int source: 0 // 0 = mangareader.com
 
     property string searchString: ""
 
-    property string html
+    property string html: getHTML.getHTML("http://www.mangareader.net/")
 
-    property var mangaList
-    property var chaptersList
-    property var linksList
-    property var mangalinksList
-    property var iconsList
+    property var mangaList: mangaReader.mangaList(html)
+    property var chaptersList: mangaReader.chaptersList(html)
+    property var linksList: mangaReader.linksList(html)
+    property var mangalinksList: mangaReader.mangalinksList(html)
+    property var iconsList: mangaReader.iconsList(html)
     property var favourites: fileIO.loadConfig("favourites")
-    property var favouritesList
+    property var favouritesList: getFavourites(mangaList,favourites)
 
     function getFavourites(mangaList,favourites) {
         var favList = []
@@ -124,12 +102,13 @@ Page {
     }
 
     function getUpdates() {
-        html = getHTML.getHTML("http://www.mangareader.net/latest")
+        html = getHTML.getHTML("http://www.mangareader.net/")
         mangaList = mangaReader.mangaList(html)
         chaptersList = mangaReader.chaptersList(html)
         linksList = mangaReader.linksList(html)
         mangalinksList = mangaReader.mangalinksList(html)
         iconsList = mangaReader.iconsList(html)
+
         refresh()
     }
 
@@ -149,23 +128,12 @@ Page {
                 x: Theme.paddingLarge
                 width: parent.width-2*x
                 height: parent.height
-                spacing: Theme.paddingSmall
                 property bool three: ( newIcon.visible && hot.visible && favourite.visible )
                 property bool two: ( ( newIcon.visible && hot.visible ) || ( hot.visible && favourite.visible ) || ( newIcon.visible &&favourite.visible ) )
                 property bool one: ( newIcon.visible || hot.visible || favourite.visible )
-                property real iconsLength: {
-                    var length = Theme.paddingLarge
-                    if ( newIcon.visible )
-                        length += newIcon.width
-                    if ( hot.visible )
-                        length += hot.width
-                    if ( favourite.visible )
-                        length += favourite.width
-                    return length
-                }
                 Label {
                     id: label
-                    width: row.width - row.iconsLength
+                    width: row.three ? row.width - favourite.width*3 : row.two ? row.width - favourite.width*2 : row.one ? row.width - favourite.width : row.width
                     anchors.verticalCenter: parent.verticalCenter
                     truncationMode: TruncationMode.Fade
                     font.pixelSize: Theme.fontSizeMedium
@@ -177,50 +145,29 @@ Page {
                     source: "image://theme/icon-m-favorite-selected"
                     visible: favouritesList[index] === "true"
                 }
-                Rectangle {
+                Image {
                     id: newIcon
-                    height: 40
-                    width: 70
+                    height: favourite.height
+                    width: favourite.width
                     anchors.verticalCenter: parent.verticalCenter
-                    color: "transparent"
-                    border.color: Theme.secondaryHighlightColor
-                    radius: 10
-                    Label {
-                        anchors.centerIn: parent
-                        color: Theme.secondaryHighlightColor
-                        text: qsTr("New")
-                    }
+                    source: "image://theme/icon-l-clock"
                     visible: iconsList[index] === "new"
                 }
-                Rectangle {
+                Image {
                     id: hot
-                    height: 40
-                    width: 60
                     anchors.verticalCenter: parent.verticalCenter
-                    color: "transparent"
-                    border.color: Theme.secondaryHighlightColor
-                    radius: 10
-                    Label {
-                        anchors.centerIn: parent
-                        color: Theme.secondaryHighlightColor
-                        text: qsTr("Hot")
-                    }
+                    source: "hot.png"
                     visible: iconsList[index] === "hot"
                 }
             }
             onPressAndHold:{
                 favourite.visible = !favourite.visible
-                console.log(newIcon.height + " " + newIcon.width)
-                console.log(hot.height + " " + hot.width)
                 if (favouritesList[index] === "true")
                     removeFavourite(section)
                 else
                     addFavourite(section)
-            }
-            onClicked: {
-                console.log("Go to: " + mangalinksList[index])
-                pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: "http://www.mangareader.net" + mangalinksList[index], manga: mangaList[index]})
-            }
+              }
+            onClicked: console.log("Go to: " + mangalinksList[index])
         }
     }
 
@@ -229,10 +176,9 @@ Page {
         anchors.fill: parent
 
         PullDownMenu {
-
             MenuItem {
                 text: "Get Updates"
-                onClicked: getHTML.get("http://www.mangareader.net/latest")
+                onClicked: getUpdates()
             }
         }
 
@@ -291,7 +237,7 @@ Page {
                 repeat: false
                 running: false
                 onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("ImagePage.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
+                    pageStack.push(Qt.resolvedUrl("ImagePage.qml"), {url: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga})
                     listView.enabled = true
                 }
             }
