@@ -23,6 +23,7 @@ QString GetHTML::getHTML(const QString &url) {
     connect(response,SIGNAL(finished()),&event,SLOT(quit()));
     event.exec();
     QString html = response->readAll(); // Source should be stored here
+
     return html;
 }
 

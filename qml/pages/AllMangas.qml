@@ -61,7 +61,7 @@ Page {
 
     onStatusChanged: {
         if ( status === PageStatus.Active ) {
-            getHTML.get("http://www.mangareader.net/latest")
+            getHTML.get("http://www.mangareader.net/alphabetical")
             //cacheManager.clearCache()
             refresh()
         }
@@ -235,10 +235,6 @@ Page {
             MenuItem {
                 text: "Get Updates"
                 onClicked: getHTML.get("http://www.mangareader.net/latest")
-            }
-            MenuItem {
-                text: "All Manga"
-                onClicked: pageStack.push(Qt.resolvedUrl("AllMangas.qml"),{})
             }
         }
 

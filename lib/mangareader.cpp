@@ -12,17 +12,20 @@ MangaReader::MangaReader(QObject *parent) :
 QStringList MangaReader::mangaList(const QString &html) {
 
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList manga;
     QString activeManga;
-
+    QString name;
+    QXmlStreamAttributes attributes;
 
     bool first = false;
     bool second = false;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
+
         if (xml.isStartElement()) {
-            QString name = xml.name().toString();
+            name = xml.name().toString();
             if (name == "td")
                 first = true;
             if ( name == "strong")
@@ -30,13 +33,13 @@ QStringList MangaReader::mangaList(const QString &html) {
             if (first && second) {
                 activeManga = xml.readElementText();
             }
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             if(attributes.hasAttribute("class") && attributes.value("class").toString() == "chaptersrec") {
                 manga.append(activeManga);
             }
         }
         if (xml.isEndElement()) {
-            QString name = xml.name().toString();
+            name = xml.name().toString();
             if ( name == "td")
                 first = false;
             if ( name == "strong")
@@ -46,7 +49,7 @@ QStringList MangaReader::mangaList(const QString &html) {
 
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error1: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -59,14 +62,18 @@ QStringList MangaReader::mangaList(const QString &html) {
 QStringList MangaReader::chaptersList(const QString &html) {
 
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList chapters;
+    QXmlStreamAttributes attributes;
+    QString activeChapter;
+
+    cout << xml.readElementText()<< endl;
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if (xml.isStartElement()) {
-            QXmlStreamAttributes attributes = xml.attributes();
+             attributes = xml.attributes();
             if(attributes.hasAttribute("class") && attributes.value("class").toString() == "chaptersrec") {
-                QString activeChapter = xml.readElementText();
+                activeChapter = xml.readElementText();
                 chapters.append(activeChapter);
             }
         }
@@ -74,7 +81,7 @@ QStringList MangaReader::chaptersList(const QString &html) {
 
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error2: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -87,15 +94,17 @@ QStringList MangaReader::chaptersList(const QString &html) {
 QStringList MangaReader::linksList(const QString &html) {
 
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList links;
+    QXmlStreamAttributes attributes;
+    QString activeLink;
 
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if (xml.isStartElement()) {
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             if(attributes.hasAttribute("class") && attributes.value("class").toString() == "chaptersrec") {
-                QString activeLink = attributes.value("href").toString();
+                activeLink = attributes.value("href").toString();
                 links.append(activeLink);
             }
         }
@@ -103,7 +112,7 @@ QStringList MangaReader::linksList(const QString &html) {
 
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error3: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -116,7 +125,7 @@ QStringList MangaReader::linksList(const QString &html) {
 QStringList MangaReader::mangalinksList(const QString &html) {
 
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList links;
     QString activeMangaLink;
 
@@ -138,7 +147,7 @@ QStringList MangaReader::mangalinksList(const QString &html) {
 
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error4: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -151,16 +160,20 @@ QStringList MangaReader::mangalinksList(const QString &html) {
 QStringList MangaReader::iconsList(const QString &html) {
 
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+
+    //html.replace(QString("&"),QString("&#038;"));
+
+    QXmlStreamReader xml(specialParse(html));
     QStringList icons;
     QString icon;
     bool first = false;
+    QString name;
 
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if (xml.isStartElement()) {
-            QString name = xml.name().toString();
-            QXmlStreamAttributes attributes = xml.attributes();
+            name = xml.name().toString();
+            attributes = xml.attributes();
             if (name == "td")
                 first = true;
             if (!first)
@@ -175,7 +188,7 @@ QStringList MangaReader::iconsList(const QString &html) {
             }
         }
         if ( xml.isEndElement() ) {
-            QString name = xml.name().toString();
+            name = xml.name().toString();
             if ( name == "td")
                 first = false;
         }
@@ -184,7 +197,7 @@ QStringList MangaReader::iconsList(const QString &html) {
 
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error5: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -196,21 +209,21 @@ QStringList MangaReader::iconsList(const QString &html) {
 
 QString MangaReader::getMangaImage(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString imageUrl;
 
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if (xml.isStartElement()) {
             QString name = xml.name().toString();
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             if ( name == "img")
                 imageUrl = attributes.value("src").toString();
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error6: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -222,17 +235,18 @@ QString MangaReader::getMangaImage(const QString &html) {
 
 QStringList MangaReader::getInfoHeaders(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList headers;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if( attributes.value("class").toString() == "propertytitle" )
             headers.append(xml.readElementText());
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error7: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -243,13 +257,14 @@ QStringList MangaReader::getInfoHeaders(const QString &html) {
 
 QStringList MangaReader::getInfos(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList infos;
     bool first = false;
+
     while (!xml.atEnd()/* && !xml.hasError()*/) {
         xml.readNext();
         QString name = xml.name().toString();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if ( attributes.value("class").toString() == "propertytitle" && (xml.readElementText() != "Name:" || xml.readElementText() == "Alternate Name:"))
             first = true;
         else if ( name == "td" && first) {
@@ -259,7 +274,7 @@ QStringList MangaReader::getInfos(const QString &html) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error8: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -270,19 +285,21 @@ QStringList MangaReader::getInfos(const QString &html) {
 
 QStringList MangaReader::getGenres(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList genres;
+    QString genre;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if ( attributes.value("class").toString() == "genretags") {
-            QString genre =  xml.readElementText();
+            genre =  xml.readElementText();
             genres.append(genre);
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error9: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -294,8 +311,9 @@ QStringList MangaReader::getGenres(const QString &html) {
 
 QString MangaReader::getDescription(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString description;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if ( xml.name().toString() == "p")
@@ -303,7 +321,7 @@ QString MangaReader::getDescription(const QString &html) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error10: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -315,12 +333,13 @@ QString MangaReader::getDescription(const QString &html) {
 QStringList MangaReader::getMangaChapters(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString html = getHtml.getHTML(url);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList urls;
     bool first = false;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if ( first && xml.isStartElement() && xml.name().toString() == "a") {
             QString getUrl = "http://www.mangareader.net" + attributes.value("href").toString();
             urls.append(getUrl);
@@ -332,7 +351,7 @@ QStringList MangaReader::getMangaChapters(const QString &url) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error11: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -344,14 +363,16 @@ QStringList MangaReader::getMangaChapters(const QString &url) {
 QStringList MangaReader::getChaptersNames(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString html = getHtml.getHTML(url);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList names;
     bool first = false;
+    QString name;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if ( first && xml.isStartElement() && xml.name().toString() == "a") {
-            QString name;
+
             name.append(xml.readElementText());
             names.append(name);
         }
@@ -362,7 +383,7 @@ QStringList MangaReader::getChaptersNames(const QString &url) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error12: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -373,18 +394,19 @@ QStringList MangaReader::getChaptersNames(const QString &url) {
 
 QStringList MangaReader::getUrls(const QString &html) {
     QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList urls;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if ( xml.isStartElement() && xml.name().toString() == "option") {
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             urls.append(attributes.value("value").toString());
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error13: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -397,18 +419,19 @@ QString MangaReader::getImage(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString fullUrl = "http://www.mangareader.net" + url;
     QString html = getHtml.getHTML(fullUrl);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString imageUrl;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if ( xml.isStartElement() && xml.name().toString() == "img") {
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             imageUrl.append(attributes.value("src").toString());
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error14: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -421,18 +444,19 @@ QString MangaReader::getImgWidth(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString fullUrl = "http://www.mangareader.net" + url;
     QString html = getHtml.getHTML(fullUrl);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString imageWidth;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if ( xml.name().toString() == "img") {
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             imageWidth.append(attributes.value("width").toString());
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error15: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -445,18 +469,19 @@ QString MangaReader::getImgHeight(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString fullUrl = "http://www.mangareader.net" + url;
     QString html = getHtml.getHTML(fullUrl);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString imageHeight;
+
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if ( xml.name().toString() == "img") {
-            QXmlStreamAttributes attributes = xml.attributes();
+            attributes = xml.attributes();
             imageHeight.append(attributes.value("height").toString());
         }
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error16: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -468,14 +493,15 @@ QString MangaReader::getImgHeight(const QString &url) {
 QStringList MangaReader::getNextPrev(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString html = getHtml.getHTML(url);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QStringList urls;
     bool first = false;
+    QString getUrl;
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
-        QXmlStreamAttributes attributes = xml.attributes();
+        attributes = xml.attributes();
         if ( first && xml.isStartElement() && xml.name().toString() == "a") {
-            QString getUrl = "http://www.mangareader.net" + attributes.value("href").toString();
+            getUrl = "http://www.mangareader.net" + attributes.value("href").toString();
             urls.append(getUrl);
         }
         if ( attributes.value("class").toString() == "c5")
@@ -485,7 +511,7 @@ QStringList MangaReader::getNextPrev(const QString &url) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error17: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
@@ -497,7 +523,7 @@ QStringList MangaReader::getNextPrev(const QString &url) {
 QString MangaReader::getTitle(const QString &url) {
     QTextStream cout(stdout); // set cout for console debug
     QString html = getHtml.getHTML(url);
-    QXmlStreamReader xml(html);
+    QXmlStreamReader xml(specialParse(html));
     QString title;
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
@@ -507,11 +533,17 @@ QString MangaReader::getTitle(const QString &url) {
     }
     if (xml.hasError())
     {
-        cout << "XML error: " << xml.errorString() << endl;
+        cout << "XML error18: " << xml.errorString() << endl;
     }
     else if (xml.atEnd())
     {
         cout << "Reached end, done" << endl;
     }
     return title;
+}
+
+// Used to fix & symbol
+QString MangaReader::specialParse(QString input) {
+        input.replace(QRegularExpression("&(?!amp;)"),"&amp;");
+        return input;
 }

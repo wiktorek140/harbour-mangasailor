@@ -52,3 +52,6 @@ HEADERS += \
     lib/cachemanager.h
 
 QT += core
+
+DISTFILES += \
+    qml/pages/AllMangas.qml

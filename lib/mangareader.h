@@ -12,7 +12,7 @@ class MangaReader : public QObject
 
 public:
     explicit MangaReader(QObject *parent = 0);
-
+    QString specialParse(QString input);
     // Latest Updates
     Q_INVOKABLE QStringList mangaList(const QString &html);
     Q_INVOKABLE QStringList chaptersList(const QString &html);
@@ -37,9 +37,9 @@ public:
     Q_INVOKABLE QString getImgHeight(const QString &url);
     Q_INVOKABLE QStringList getNextPrev(const QString &url);
     Q_INVOKABLE QString getTitle(const QString &url);
-
 private:
     GetHTML getHtml;
+    QXmlStreamAttributes attributes;
 
 
 };
