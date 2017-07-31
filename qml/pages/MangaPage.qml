@@ -18,17 +18,15 @@ Page {
                 description = mangaReader.getDescription(html)
             }
         }
+        onFinish: {
+            pageStack.pushAttached(Qt.resolvedUrl("ChaptersListPage.qml"), {mainUrl: mangaUrl, mangaName: manga})
+        }
     }
 
     property int source: 0 // 0 = mangareader.com
     MangaReader { id: mangaReader }
 
-    onStatusChanged: {
-        if ( status === PageStatus.Activating )
-            getHTML.get(mangaUrl)
-        if( status === PageStatus.Active )
-            pageStack.pushAttached(Qt.resolvedUrl("ChaptersListPage.qml"), {mainUrl: mangaUrl, mangaName: manga})
-    }
+    Component.onCompleted: getHTML.get(mangaUrl)
 
     property string mangaUrl
     property string manga
@@ -57,19 +55,22 @@ Page {
         id: flickable
         anchors.fill: page
         contentHeight: column.height
-/*
         PullDownMenu {
             MenuItem {
-                text: "Add " + manga + " to Favourites"
+                text: favourites.indexOf(manga) === -1
+                      ? qsTr("Add ") + manga + qsTr(" to Favourites")
+                      : qsTr("Remove ") + manga + qsTr(" from Favourites")
                 onClicked: {
-                    if ( favourites.indexOf(manga) === -1 )
+                    if ( favourites.indexOf(manga) === -1 ) {
                         addFavourite(manga)
-                    else
+                        text = qsTr("Remove ") + manga + qsTr(" from Favourites")
+                    } else {
                         removeFavourite(manga)
+                        text = qsTr("Add ") + manga + qsTr(" to Favourites")
+                    }
                 }
             }
         }
-*/
         Column {
             id: column
             width: parent.width - Theme.paddingLarge*2
@@ -156,10 +157,9 @@ Page {
                 text: "Genres"
                 color: Theme.highlightColor
             }
-            Grid {
+            Flow {
                 width: parent.width
-                columnSpacing: Theme.paddingMedium
-                rowSpacing: Theme.paddingMedium
+                spacing: Theme.paddingMedium
                 Repeater {
                     id: repeater
                     model: genres.length
@@ -184,5 +184,4 @@ Page {
         }
         VerticalScrollDecorator { flickable: flickable }
     }
-
 }

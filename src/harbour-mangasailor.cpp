@@ -33,6 +33,7 @@
 #include "lib/mangareader.h"
 #include "lib/getHTML.h"
 #include "lib/fileIO.h"
+#include "lib/allmanga.h"
 #include "lib/cachemanager.h"
 
 int main(int argc, char *argv[])
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
     // To display the view, call "show()" (will show fullscreen on device).
 
     qmlRegisterType<MangaReader, 1>("harbour.mangasailor.MangaReader", 1, 0, "MangaReader");
+    qmlRegisterType<AllManga, 1>("harbour.mangasailor.AllManga", 1, 0, "AllManga");
     qmlRegisterType<GetHTML, 1>("harbour.mangasailor.GetHTML", 1, 0, "GetHTML");
     qmlRegisterType<FileIO, 1>("harbour.mangasailor.FileIO", 1, 0, "FileIO");
     qmlRegisterType<CacheManager, 1>("harbour.mangasailor.CacheManager", 1, 0, "CacheManager");

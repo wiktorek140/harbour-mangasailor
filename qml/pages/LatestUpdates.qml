@@ -1,3 +1,4 @@
+
 /*
   Copyright (C) 2013 Jolla Ltd.
   Contact: Thomas Perl <thomas.perl@jollamobile.com>
@@ -33,7 +34,7 @@ import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.GetHTML 1.0
 import harbour.mangasailor.MangaReader 1.0
-import harbour.mangasailor.CacheManager 1.0
+//import harbour.mangasailor.CacheManager 1.0
 
 
 Page {
@@ -44,7 +45,6 @@ Page {
         id: getHTML
         onHtmlChanged: {
             if (source === 0){
-                //print(html);
                 mangaList = mangaReader.mangaList(html)
                 chaptersList = mangaReader.chaptersList(html)
                 linksList = mangaReader.linksList(html)
@@ -57,14 +57,12 @@ Page {
     }
 
     MangaReader { id: mangaReader }
-    CacheManager { id: cacheManager }
+    //CacheManager { id: cacheManager }
 
-    onStatusChanged: {
-        if ( status === PageStatus.Active ) {
-            getHTML.get("http://www.mangareader.net/latest")
-            //cacheManager.clearCache()
-            refresh()
-        }
+    Component.onCompleted: {
+        getHTML.get("http://www.mangareader.net/latest")
+        console.log()
+        refresh()
     }
 
     property int source: 0 // 0 = mangareader.com
@@ -125,13 +123,7 @@ Page {
     }
 
     function getUpdates() {
-        html = getHTML.getHTML("http://www.mangareader.net/latest")
-        print(html);
-        mangaList = mangaReader.mangaList(html)
-        chaptersList = mangaReader.chaptersList(html)
-        linksList = mangaReader.linksList(html)
-        mangalinksList = mangaReader.mangalinksList(html)
-        iconsList = mangaReader.iconsList(html)
+        html = getHTML.get("http://www.mangareader.net/latest")
         refresh()
     }
 
@@ -288,8 +280,9 @@ Page {
             }
             onClicked: {
                 console.log("Clicked " + link)
-                listView.enabled = false
-                clickTimer.start()
+                pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
+                //listView.enabled = false
+                //clickTimer.start()
             }
             Timer {
                 id: clickTimer
@@ -297,7 +290,6 @@ Page {
                 repeat: false
                 running: false
                 onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("ImagePage.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
                     listView.enabled = true
                 }
             }
@@ -310,7 +302,3 @@ Page {
         VerticalScrollDecorator {}
     }
 }
-
-
-
-

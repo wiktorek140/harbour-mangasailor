@@ -6,16 +6,24 @@ import harbour.mangasailor.MangaReader 1.0
 
 Page {
     id: page
+    Component.onCompleted: getHTML.get(mainUrl)
 
     FileIO { id: fileIO }
-    GetHTML { id: getHTML}
+    GetHTML {
+        id: getHTML
+        onHtmlChanged: {
+            mangaChapters = mangaReader.getMangaChapters(html)
+            chaptersNames = mangaReader.getChaptersNames(html)
+        }
+    }
     MangaReader { id: mangaReader }
 
     property string mainUrl
     property string mangaName
 
-    property var mangaChapters: mangaReader.getMangaChapters(mainUrl)
-    property var chaptersNames: mangaReader.getChaptersNames(mainUrl)
+    property var mangaChapters
+    property var chaptersNames
+
     onChaptersNamesChanged: {
         for( var i = 0; i < chaptersNames.length ; i++ ) {
             listModel.append({
@@ -55,9 +63,7 @@ Page {
                 text: name
             }
             onClicked: {
-                console.log("Clicked " + link)
-                listView.enabled = false
-                clickTimer.start()
+                pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: link, mainUrl: mainUrl, mangaName: mangaName, imgTitle: name})
             }
             Timer {
                 id: clickTimer
@@ -65,7 +71,6 @@ Page {
                 repeat: false
                 running: false
                 onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("ImagePage.qml"), {chapUrl: link, mainUrl: mainUrl, mangaName: mangaName, imgTitle: name})
                     listView.enabled = true
                 }
             }

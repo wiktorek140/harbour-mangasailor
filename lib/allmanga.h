@@ -1,18 +1,18 @@
-#ifndef MANGAREADER_H
-#define MANGAREADER_H
+#ifndef ALLMANGA_H
+#define ALLMANGA_H
 
 #include <QStringList>
 #include "getHTML.h"
 
 class GetHTML;
 
-class MangaReader : public QObject
+class AllManga : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit MangaReader(QObject *parent = 0);
-
+    explicit AllManga(QObject *parent = 0);
+    QString specialParse(QString input);
     // Latest Updates
     Q_INVOKABLE QStringList mangaList(const QString &html);
     Q_INVOKABLE QStringList chaptersList(const QString &html);
@@ -27,32 +27,21 @@ public:
     Q_INVOKABLE QStringList getGenres(const QString &html);
     Q_INVOKABLE QString getDescription(const QString &html);
 
-    //Chapters
-    Q_INVOKABLE QStringList getMangaChapters(const QString &html);
-    Q_INVOKABLE QStringList getChaptersNames(const QString &html);
-    Q_INVOKABLE QString getChapterName(const QString &html);
-    Q_INVOKABLE QString getNextPageUrl(const QString &html);
-    Q_INVOKABLE int getLastPage(const QString &html);
+    Q_INVOKABLE QStringList getMangaChapters(const QString &url);
+    Q_INVOKABLE QStringList getChaptersNames(const QString &url);
 
     // Image Page
     Q_INVOKABLE QStringList getUrls(const QString &html);
-    Q_INVOKABLE QString getImage(const QString &html);
-    Q_INVOKABLE QString getImgWidth(const QString &html);
-    Q_INVOKABLE QString getImgHeight(const QString &html);
-    Q_INVOKABLE QStringList getNextPrev(const QString &html);
+    Q_INVOKABLE QString getImage(const QString &url);
+    Q_INVOKABLE QString getImgWidth(const QString &url);
+    Q_INVOKABLE QString getImgHeight(const QString &url);
+    Q_INVOKABLE QStringList getNextPrev(const QString &url);
     Q_INVOKABLE QString getTitle(const QString &url);
-
-    // Cheking things
-    Q_INVOKABLE bool isChapter(const QString &html);
-    QString specialParse(QString input);
-
-
 private:
     GetHTML getHtml;
     QXmlStreamAttributes attributes;
-    QStringList PNUrls;
-
+    QStringList links;
 
 };
 
-#endif // MANGAREADER_H
+#endif // ALLMANGA_H

@@ -45,6 +45,9 @@ void GetHTML::finished()
     QString html = _reply->readAll();
     QTextStream(stdout) << "Got Html" << endl;
     setHtml(html);
+
     _reply->deleteLater();
+    emit finish();
+
     // done
 }
