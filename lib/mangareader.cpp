@@ -544,7 +544,7 @@ QStringList MangaReader::getNextPrev(const QString &html) {
     {
         cout << "Reached end, done" << endl;
     }
-    cout << "1:"<<urls.at(0)<< endl<<"2: "<<urls.at(1)<<endl;
+    //cout << "1:"<<urls.at(0)<< endl<<"2: "<<urls.at(1)<<endl;
     return urls;
 }
 

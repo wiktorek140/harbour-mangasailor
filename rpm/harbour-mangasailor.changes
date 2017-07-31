@@ -8,7 +8,18 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Tue Mar 31 2015 Billy Halley <ziobilly94@gmail.com> 0.2.1-1
+#* Tue Mar 31 2015 Billy Halley <ziobilly94@gmail.com> 0.2.1-1
+* Mon Jul 31 2017 Wiktor Strzębała <wiktorek140@tlen.pl> 0.4.3-1
+
+- v0.4.3-1
+-- Fully support all mangas from website
+-- Little tweaks
+
+- v0.4.2-1
+-- Update to newest qml files
+-- Fixed moving forward/backward
+-- Updated net function
+
 - v0.2.1-1
 -- Fixed "Get Updates"
 
@@ -17,8 +28,8 @@
 -- Added old chapters list in drawer while reading manga and in attached page of manga description page
 -- Now "new" mangas are displayed in list
 -- Removed icon for hot and new, replaced with texts
--- - Little Issue: Loading a chapter can't be aborted, you can go back only when chapter is fully loaded
--- - Known Bug: Sometimes loading never ends, even after chapter is fully loaded
+-- Little Issue: Loading a chapter can't be aborted, you can go back only when chapter is fully loaded
+-- Known Bug: Sometimes loading never ends, even after chapter is fully loaded
 
 - v0.1.0-1
 -- Added Manga page with description

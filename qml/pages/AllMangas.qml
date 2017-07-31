@@ -45,12 +45,12 @@ Page {
         id: getHTML
         onHtmlChanged: {
             if (source === 0){
-                print(html)
+                //print(html)
                 mangaList = allManga.mangaList(html)
                 //chaptersList = mangaReader.chaptersList(html)
-                //linksList = mangaReader.linksList(html)
+                linksList = allManga.linksList(html)
                 mangalinksList = allManga.mangalinksList(html)
-                iconsList = allManga.iconsList(html)
+                //iconsList = allManga.iconsList(html)
                 favouritesList = getFavourites(mangaList,favourites)
             }
             refresh()
@@ -76,7 +76,7 @@ Page {
     //property var chaptersList
     property var linksList
     property var mangalinksList
-    property var iconsList
+    //property var iconsList
     property var favourites: fileIO.loadConfig("favourites")
     property var favouritesList
 
@@ -117,8 +117,8 @@ Page {
                 listModel.append({
                                      //"chapter": chaptersList[i],
                                      "manga": mangaList[i],
-                                     //"link": linksList[i],
-                                     "mangalink": mangalinksList[i]
+                                     "link": linksList[i],
+                                     //"mangalink": mangalinksList[i]
                                  })
             }
     }
@@ -145,15 +145,15 @@ Page {
                 width: parent.width-2*x
                 height: parent.height
                 spacing: Theme.paddingSmall
-                property bool three: ( newIcon.visible && hot.visible && favourite.visible )
-                property bool two: ( ( newIcon.visible && hot.visible ) || ( hot.visible && favourite.visible ) || ( newIcon.visible &&favourite.visible ) )
-                property bool one: ( newIcon.visible || hot.visible || favourite.visible )
+                property bool three: ( favourite.visible )
+                property bool two: ( favourite.visible )
+                property bool one: ( favourite.visible )
                 property real iconsLength: {
                     var length = Theme.paddingLarge
-                    if ( newIcon.visible )
-                        length += newIcon.width
-                    if ( hot.visible )
-                        length += hot.width
+                    //if ( newIcon.visible )
+                    //    length += newIcon.width
+                    //if ( hot.visible )
+                    //    length += hot.width
                     if ( favourite.visible )
                         length += favourite.width
                     return length
@@ -172,7 +172,7 @@ Page {
                     source: "image://theme/icon-m-favorite-selected"
                     visible: favouritesList[index] === "true"
                 }
-                Rectangle {
+                /*Rectangle {
                     id: newIcon
                     height: 40
                     width: 70
@@ -201,7 +201,7 @@ Page {
                         text: qsTr("Hot")
                     }
                     visible: iconsList[index] === "hot"
-                }
+                }*/
             }
             onPressAndHold:{
                 favourite.visible = !favourite.visible
@@ -229,7 +229,6 @@ Page {
                 text: "Refresh All"
                 onClicked: getHTML.get("http://www.mangareader.net/alphabetical")
             }
-
         }
 
         ViewPlaceholder {
@@ -266,19 +265,23 @@ Page {
         model: listModel
         delegate: ListItem {
             id: listDelegate
+             property int index: mangaList.indexOf(manga)
             Label {
                 x: Theme.paddingLarge*2
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width-2*x
-                horizontalAlignment: _fadeText ? Text.AlignRight : Text.AlignLeft
+                //horizontalAlignment: _fadeText ? Text.AlignRight : Text.AlignLeft
                 truncationMode: TruncationMode.Fade
                 font.pixelSize: Theme.fontSizeMedium
-                color: Theme.secondaryColor
+                color: Theme.primaryColor
                 text: manga
+
+                visible: true
             }
             onClicked: {
                 console.log("Clicked " + link)
-                pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
+                pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: "http://www.mangareader.net" + mangalinksList[index], manga: mangaList[index]})
+                //pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
                 //listView.enabled = false
                 //clickTimer.start()
             }
@@ -293,9 +296,9 @@ Page {
             }
         }
 
-        section.property: "manga"
-        section.criteria: ViewSection.FullString
-        section.delegate: sectionHeading
+        //section.property: "manga"
+        //section.criteria: ViewSection.FullString
+        //section.delegate: sectionHeading
 
         VerticalScrollDecorator {}
     }

@@ -29,6 +29,7 @@ public:
 
     Q_INVOKABLE QStringList getMangaChapters(const QString &url);
     Q_INVOKABLE QStringList getChaptersNames(const QString &url);
+    Q_INVOKABLE QString getChapterName(const QString &html);
 
     // Image Page
     Q_INVOKABLE QStringList getUrls(const QString &html);
@@ -36,11 +37,15 @@ public:
     Q_INVOKABLE QString getImgWidth(const QString &url);
     Q_INVOKABLE QString getImgHeight(const QString &url);
     Q_INVOKABLE QStringList getNextPrev(const QString &url);
+    Q_INVOKABLE QString getNextPageUrl(const QString &html);
     Q_INVOKABLE QString getTitle(const QString &url);
+
+    Q_INVOKABLE int getLastPage(const QString &html);
+    Q_INVOKABLE bool isChapter(const QString &html);
 private:
     GetHTML getHtml;
     QXmlStreamAttributes attributes;
-    QStringList links;
+    //QStringList links;
 
 };
 
