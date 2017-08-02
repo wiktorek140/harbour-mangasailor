@@ -44,15 +44,15 @@ Page {
     GetHTML {
         id: getHTML
         onHtmlChanged: {
-            if (source === 0){
+            //if (source === 0){
                 //print(html)
-                mangaList = allManga.mangaList(html)
+                mangaList = allManga.mangaList(html,source)
                 //chaptersList = mangaReader.chaptersList(html)
-                linksList = allManga.linksList(html)
-                mangalinksList = allManga.mangalinksList(html)
+                linksList = allManga.linksList(html,source)
+                mangalinksList = allManga.mangalinksList(html,source)
                 //iconsList = allManga.iconsList(html)
                 favouritesList = getFavourites(mangaList,favourites)
-            }
+            //}
             refresh()
         }
     }
@@ -61,8 +61,7 @@ Page {
     //CacheManager { id: cacheManager }
 
     Component.onCompleted: {
-        getHTML.get("http://www.mangareader.net/alphabetical")
-        console.log()
+        getHTML.get(avaiablePages[source])
         refresh()
     }
 
@@ -72,6 +71,9 @@ Page {
 
     property string html
 
+    property var avaiablePages: {0:"http://www.mangareader.net/alphabetical",1:"http://mangafox.me/manga/"};
+    property var pageBase: ["http://www.mangareader.net","http://mangafox.me"];
+    property var pageNames: {0:"Mangareader.net",1:"Mangafox.me"}
     property var mangaList
     //property var chaptersList
     property var linksList
@@ -124,7 +126,7 @@ Page {
     }
 
     function getUpdates() {
-        html = getHTML.get("http://www.mangareader.net/alphabetical")
+        getHTML.get(avaiablePages[source])
         refresh()
     }
 
@@ -133,7 +135,7 @@ Page {
         Component.onCompleted: refresh()
     }
 
-    Component {
+    /*Component {
         id: sectionHeading
         BackgroundItem{
             width: parent.width
@@ -201,7 +203,7 @@ Page {
                         text: qsTr("Hot")
                     }
                     visible: iconsList[index] === "hot"
-                }*/
+                }
             }
             onPressAndHold:{
                 favourite.visible = !favourite.visible
@@ -214,11 +216,13 @@ Page {
             }
             onClicked: {
                 console.log("Go to: " + mangalinksList[index])
-                pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: "http://www.mangareader.net" + mangalinksList[index], manga: mangaList[index]})
+                if (source !== 0){
+                    pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: mangalinksList[index], manga: mangaList[index]})
+                } else pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: pageBase[source] + mangalinksList[index], manga: mangaList[index]})
             }
         }
     }
-
+    */
     SilicaListView {
         id: listView
         anchors.fill: parent
@@ -227,7 +231,19 @@ Page {
 
             MenuItem {
                 text: "Refresh All"
-                onClicked: getHTML.get("http://www.mangareader.net/alphabetical")
+                onClicked: getHTML.get(avaiablePages[source])
+            }
+            MenuItem {
+                text: pageNames[0]
+                onClicked: {
+                    source = 0
+                    getHTML.get(avaiablePages[source])}
+            }
+            MenuItem {
+                text: pageNames[1]
+                onClicked: {
+                    source = 1
+                    getHTML.get(avaiablePages[source])}
             }
         }
 
@@ -241,7 +257,8 @@ Page {
             width: page.width
             PageHeader {
                 id: pageHeader
-                title: source === 0 ? qsTr("MangaReader.net") : qsTr("UI Template")
+                //title: source === 0 ? qsTr("MangaReader.net") : qsTr("UI Template")
+                title: pageNames[source]
             }
             Label {
                 x: Theme.paddingMedium
@@ -280,7 +297,12 @@ Page {
             }
             onClicked: {
                 console.log("Clicked " + link)
-                pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: "http://www.mangareader.net" + mangalinksList[index], manga: mangaList[index]})
+                if (source === 0){
+                    pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: pageBase[source] + mangalinksList[index], manga: mangaList[index], source: source})
+                    //pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: mangalinksList[index], manga: mangaList[index], source: source})
+                } else pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: mangalinksList[index], manga: mangaList[index], source: source})
+
+
                 //pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: "http://www.mangareader.net" + link, mainUrl: "http://www.mangareader.net" + mangalink, mangaName: manga, imgTitle: chapter})
                 //listView.enabled = false
                 //clickTimer.start()

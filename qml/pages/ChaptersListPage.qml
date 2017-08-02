@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.GetHTML 1.0
 import harbour.mangasailor.MangaReader 1.0
-
+import harbour.mangasailor.AllManga 1.0
 Page {
     id: page
     Component.onCompleted: getHTML.get(mainUrl)
@@ -12,17 +12,20 @@ Page {
     GetHTML {
         id: getHTML
         onHtmlChanged: {
-            mangaChapters = mangaReader.getMangaChapters(html)
-            chaptersNames = mangaReader.getChaptersNames(html)
+            console.log("S:",source)
+            mangaChapters = allManga.getMangaChapters(html,source)
+            chaptersNames = allManga.getChaptersNames(html,source)
         }
     }
     MangaReader { id: mangaReader }
-
+    AllManga {id: allManga }
     property string mainUrl
     property string mangaName
 
     property var mangaChapters
     property var chaptersNames
+
+    property int source
 
     onChaptersNamesChanged: {
         for( var i = 0; i < chaptersNames.length ; i++ ) {
@@ -63,7 +66,7 @@ Page {
                 text: name
             }
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: link, mainUrl: mainUrl, mangaName: mangaName, imgTitle: name})
+                pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: link, mainUrl: mainUrl, mangaName: mangaName, imgTitle: name, source: source})
             }
             Timer {
                 id: clickTimer

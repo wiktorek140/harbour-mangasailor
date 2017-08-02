@@ -12,40 +12,43 @@ class AllManga : public QObject
 
 public:
     explicit AllManga(QObject *parent = 0);
-    QString specialParse(QString input);
+    QString specialParse(QString input, bool img=true);
+
     // Latest Updates
-    Q_INVOKABLE QStringList mangaList(const QString &html);
-    Q_INVOKABLE QStringList chaptersList(const QString &html);
-    Q_INVOKABLE QStringList linksList(const QString &html);
-    Q_INVOKABLE QStringList mangalinksList(const QString &html);
-    Q_INVOKABLE QStringList iconsList(const QString &html);
+    Q_INVOKABLE QStringList mangaList(const QString &html,int w=0);
+    Q_INVOKABLE QStringList chaptersList(const QString &html,int w=0);
+    Q_INVOKABLE QStringList linksList(const QString &html,int w=0);
+    Q_INVOKABLE QStringList mangalinksList(const QString &html,int w=0);
+    Q_INVOKABLE QStringList iconsList(const QString &html,int w=0);
 
     // Manga Page
-    Q_INVOKABLE QString getMangaImage(const QString &html);
-    Q_INVOKABLE QStringList getInfoHeaders(const QString &html);
-    Q_INVOKABLE QStringList getInfos(const QString &html);
-    Q_INVOKABLE QStringList getGenres(const QString &html);
-    Q_INVOKABLE QString getDescription(const QString &html);
+    Q_INVOKABLE QString getMangaImage(const QString &html,int w=0);
+    Q_INVOKABLE QStringList getInfoHeaders(const QString &html,int w=0);
+    Q_INVOKABLE QStringList getInfos(const QString &html,int w=0);
+    Q_INVOKABLE QStringList getGenres(const QString &html,int w=0);
+    Q_INVOKABLE QString getDescription(const QString &html,int w=0);
 
-    Q_INVOKABLE QStringList getMangaChapters(const QString &url);
-    Q_INVOKABLE QStringList getChaptersNames(const QString &url);
-    Q_INVOKABLE QString getChapterName(const QString &html);
+    Q_INVOKABLE QStringList getMangaChapters(const QString &url,int w=0);
+    Q_INVOKABLE QStringList getChaptersNames(const QString &url,int w=0);
+    Q_INVOKABLE QString getChapterName(const QString &html,int w=0);
 
     // Image Page
-    Q_INVOKABLE QStringList getUrls(const QString &html);
-    Q_INVOKABLE QString getImage(const QString &url);
-    Q_INVOKABLE QString getImgWidth(const QString &url);
-    Q_INVOKABLE QString getImgHeight(const QString &url);
-    Q_INVOKABLE QStringList getNextPrev(const QString &url);
-    Q_INVOKABLE QString getNextPageUrl(const QString &html);
-    Q_INVOKABLE QString getTitle(const QString &url);
+    Q_INVOKABLE QStringList getUrls(const QString &html,int w=0);
+    Q_INVOKABLE QString getImage(const QString &url,int w=0);
+    Q_INVOKABLE QString getImgWidth(const QString &url,int w=0);
+    Q_INVOKABLE QString getImgHeight(const QString &url,int w=0);
+    Q_INVOKABLE QStringList getNextPrev(const QString &url, const QString &bUrl, int w=0);
+    Q_INVOKABLE QString getNextPageUrl(const QString &html,const QString &bUrl, int w=0);
+    Q_INVOKABLE QString getTitle(const QString &url,int w=0);
 
-    Q_INVOKABLE int getLastPage(const QString &html);
-    Q_INVOKABLE bool isChapter(const QString &html);
+    Q_INVOKABLE int getLastPage(const QString &html, int w=0);
+    Q_INVOKABLE bool isChapter(const QString &html, int w=0);
+    QStringList pages = {"http://www.mangareader.net","http://mangafox.me"};
+    Q_INVOKABLE QString pageBase(int num) {return pages.at(num);}
+
 private:
     GetHTML getHtml;
     QXmlStreamAttributes attributes;
-    //QStringList links;
 
 };
 

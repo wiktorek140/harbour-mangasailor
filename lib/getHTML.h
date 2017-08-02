@@ -21,9 +21,7 @@ public:
     void setHtml(const QString &a) {
         if (a != m_html) {
             m_html = a;
-            //emit finish();
             emit htmlChanged();
-
         }
     }
     QString html() const {

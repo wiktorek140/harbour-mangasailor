@@ -34,7 +34,7 @@ import "pages"
 
 ApplicationWindow
 {
-    initialPage: Component { LatestUpdates { } }
+    initialPage: Component { AllMangas { } }
     cover: undefined //Qt.resolvedUrl("cover/CoverPage.qml")
 }
 

@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.GetHTML 1.0
 import harbour.mangasailor.MangaReader 1.0
+import harbour.mangasailor.AllManga 1.0
 
 Page {
     id: page
@@ -11,20 +12,21 @@ Page {
     GetHTML {
         id: getHTML
         onHtmlChanged: {
-            if (source === 0){
-                imageUrl = mangaReader.getMangaImage(html)
-                infos = mangaReader.getInfos(html)
-                genres = mangaReader.getGenres(html)
-                description = mangaReader.getDescription(html)
-            }
+            console.log(source)
+            imageUrl = allManga.getMangaImage(html,source)
+            infos = allManga.getInfos(html,source)
+            genres = allManga.getGenres(html,source)
+            description = allManga.getDescription(html,source)
+
         }
         onFinish: {
-            pageStack.pushAttached(Qt.resolvedUrl("ChaptersListPage.qml"), {mainUrl: mangaUrl, mangaName: manga})
+            pageStack.pushAttached(Qt.resolvedUrl("ChaptersListPage.qml"), {mainUrl: mangaUrl, mangaName: manga, source: source})
         }
     }
 
-    property int source: 0 // 0 = mangareader.com
-    MangaReader { id: mangaReader }
+    property int source // 0 = mangareader.com
+    //MangaReader { id: mangaReader }
+    AllManga { id: allManga }
 
     Component.onCompleted: getHTML.get(mangaUrl)
 
@@ -42,6 +44,7 @@ Page {
         favourites.push(title)
         fileIO.saveConfig("favourites", favourites)
         console.log(favourites)
+        console.log(source)
     }
 
     function removeFavourite(title) {

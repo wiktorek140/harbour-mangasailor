@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.MangaReader 1.0
+import harbour.mangasailor.AllManga 1.0
 import harbour.mangasailor.GetHTML 1.0
 
 Page {
@@ -33,6 +34,7 @@ Page {
     property string mangaName
     property string imgTitle
 
+    property int source
     property int lastPage: 0
     property int loading: 0
     property var nextPrev
@@ -45,25 +47,25 @@ Page {
         }
         onFinish: {
             //print(html)
-            console.log("Na nowy rozdział")
+            //console.log("Na nowy rozdział")
 
-            isChapter = mangaReader.isChapter(html)
-            console.log("Rodzial:",isChapter)
+            isChapter = allManga.isChapter(html,source)
+            //console.log("Rodzial:",isChapter)
             if ( isChapter && ( loading !== lastPage || lastPage === 0 ) ) {
                 loading++
-                var imgSrc = mangaReader.getImage(html)
+                var imgSrc = allManga.getImage(html,source)
                 imgModel.append({
                                     'src': imgSrc
                                 })
                 if ( imgModel.count === 1 ) {
                     image.source = imgModel.get(0).src
                 }
-                var nextUrl = mangaReader.getNextPageUrl(html)
+                var nextUrl = allManga.getNextPageUrl(html,allManga.pageBase(source),source)
 
                 if ( loading === 1 ) {
-                    lastPage = mangaReader.getLastPage(html)
-                    nextPrev = mangaReader.getNextPrev(html)
-                    imgTitle = mangaReader.getChapterName(html)
+                    lastPage = allManga.getLastPage(html,source)
+                    nextPrev = allManga.getNextPrev(html,allManga.pageBase(source),source)
+                    imgTitle = allManga.getChapterName(html,source)
                 }
                 if ( loading <= lastPage ) {
                     //console.log("HUH? IT executed?")
@@ -83,13 +85,13 @@ Page {
     GetHTML {
         id: getChaptersHtml
         onHtmlChanged: {
-            mangaChapters = mangaReader.getMangaChapters(html)
-            chaptersNames = mangaReader.getChaptersNames(html)
+            mangaChapters = allManga.getMangaChapters(html,source)
+            chaptersNames = allManga.getChaptersNames(html,source)
         }
     }
 
     MangaReader { id: mangaReader }
-
+    AllManga { id: allManga }
     ListModel {
         id: imgModel
     }
@@ -214,7 +216,7 @@ Page {
 
             MenuItem {
                 text: mangaName
-                onClicked: pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: mainUrl, manga: mangaName})
+                onClicked: pageStack.push(Qt.resolvedUrl("MangaPage.qml"), {mangaUrl: mainUrl, manga: mangaName, source:source})
             }
             enabled: !dockedPanel.open && ( ( flick.contentWidth === screen.width && orientation === Orientation.Portrait ) || ( flick.contentWidth === screen.height && orientation === Orientation.Landscape ) )
         }
@@ -360,8 +362,9 @@ Page {
                     }  else if ( !loadingTimer.running && nextIsChapter) {
                         console.log("Nowy rozdzial")
                         imgModel.clear()
+                        //preview.currentIndex = 0
                         getHtml.get(nextPrev[0])
-                        preview.currentIndex=0
+                        preview.currentIndex = 0
                         loading = 0
                     }
                 }
