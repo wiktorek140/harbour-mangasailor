@@ -576,7 +576,7 @@ QStringList AllManga::getMangaChapters(const QString &html,int w) {
             xml.readNext();
             attributes = xml.attributes();
             if ( first && xml.isStartElement() && xml.name().toString() == "a") {
-                QString getUrl = "http://www.mangareader.net" + attributes.value("href").toString();
+                getUrl = "http://www.mangareader.net" + attributes.value("href").toString();
                 urls.append(getUrl);
             }
             if ( attributes.value("id").toString() == "listing")
@@ -591,22 +591,28 @@ QStringList AllManga::getMangaChapters(const QString &html,int w) {
 
         while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
+            //cout<< xml.name().toString()<<endl;
+            //cout<< xml.attributes().value("id")<<endl;
 
             if(xml.isStartElement()){
                 attributes = xml.attributes();
-                if(xml.name().toString() == "h2" && attributes.hasAttribute("style")) first=true;
-                if(xml.name().toString() == "li") second = true;
+                if(xml.name().toString() == "li") first=true;
+                if(xml.name().toString() == "div") second = true;
                 if(first && second && xml.name().toString() == "a" && attributes.hasAttribute("class") && attributes.hasAttribute("href")) {
-                    if(attributes.value("class").toString() == "tips") urls.append(attributes.value("href").toString());
+                    if(attributes.value("class").toString() == "tips"){
+                        cout<<attributes.value("href").toString()<<endl;
+                        getUrl = attributes.value("href").toString();
+                        urls.append(getUrl);
+                    }
                     //getUrl = attributes.value("href").toString();
 
                 }
             }
 
             if(xml.isEndElement()){
-                if(xml.name().toString() == "h2")
-                    first=false;
                 if(xml.name().toString() == "li")
+                    first=false;
+                if(xml.name().toString() == "div")
                     second=false;
             }
 
@@ -614,7 +620,8 @@ QStringList AllManga::getMangaChapters(const QString &html,int w) {
         break; }
 
     }
-
+    //cout<< xml.name().toString()<<endl;
+    //cout<< xml.attributes().value("content")<<endl;
     if (xml.hasError())
     {
         cout << "XML error11: " << xml.errorString() << endl;
@@ -631,9 +638,8 @@ QStringList AllManga::getChaptersNames(const QString &html,int w) {
     //QString html = getHtml.getHTML(url);
     QXmlStreamReader xml(specialParse(html));
     QStringList names;
-    QString aNames;
-    QString nt;
-    bool first = false;
+    //QString aNames;
+    bool first = false,second=false;
     QString name;
 
     switch(w){
@@ -643,7 +649,8 @@ QStringList AllManga::getChaptersNames(const QString &html,int w) {
             attributes = xml.attributes();
             if ( first && xml.isStartElement() && xml.name().toString() == "a") {
 
-                name.append(xml.readElementText());
+                name= xml.readElementText();
+                cout<< name<<endl;
                 names.append(name);
             }
             if ( attributes.value("id").toString() == "listing")
@@ -660,29 +667,28 @@ QStringList AllManga::getChaptersNames(const QString &html,int w) {
 
             if(xml.isStartElement()){
                 attributes = xml.attributes();
-                if(xml.name().toString() == "h2" && attributes.hasAttribute("style")) first=true;
-                if(first && xml.name().toString() == "a" && attributes.hasAttribute("class") && attributes.hasAttribute("href") && attributes.value("class").toString() == "tips") {
-                    //nt=xml.readElementText();
-                    names.append(xml.readElementText());
+                if(xml.name().toString() == "li") first=true;
+                if(xml.name().toString() == "div") second = true;
+                if(first && second && xml.name().toString() == "a" && attributes.hasAttribute("class") && attributes.hasAttribute("href")) {
+                    //
+                    if(attributes.value("class").toString() == "tips"){
+
+                        name= xml.readElementText() ;
+                        cout <<name<<endl;
+                        names.append(name);
+                    }
+                    //getUrl = attributes.value("href").toString();
+
                 }
             }
 
             if(xml.isEndElement()){
-                if(xml.name().toString() == "h2")
+                if(xml.name().toString() == "li")
                     first=false;
-
-
+                if(xml.name().toString() == "div")
+                    second=false;
             }
 
-            /*attributes = xml.attributes();
-            if ( first && xml.isStartElement() && xml.name().toString() == "a") {
-                getUrl = attributes.value("href").toString();
-                urls.append(getUrl);
-            }
-            if ( attributes.value("id").toString() == "listing")
-                first = true;
-            if ( xml.isEndElement() && xml.name().toString() == "table" )
-                first = false;*/
         }
         break; }
 
@@ -787,7 +793,17 @@ QString AllManga::getImage(const QString &html,int w) {
 
         break;
     }
-    case 1: {break;}
+    case 1: {
+
+        while (!xml.atEnd() && !xml.hasError()) {
+            xml.readNext();
+            if ( xml.isStartElement() && xml.name().toString() == "img" && xml.attributes().value("id").toString() == "image") {
+                attributes = xml.attributes();
+                imageUrl = attributes.value("src").toString();
+            }
+        }
+
+        break; }
 
     }
 
@@ -895,7 +911,21 @@ QStringList AllManga::getNextPrev(const QString &html, const QString &bUrl, int 
         }
 
         break; }
-    case 1: {break;}
+    case 1: {
+        while (!xml.atEnd() && !xml.hasError()) {
+            xml.readNext();
+            attributes = xml.attributes();
+            if ( first && xml.isStartElement() && xml.name().toString() == "a") {
+                getUrl = attributes.value("href").toString();
+                urls.append(getUrl);
+            }
+            if ( attributes.value("id").toString() == "chnav" && xml.name().toString() == "div")
+                first = true;
+            if ( xml.isEndElement() && xml.name().toString() == "div" )
+                first = false;
+        }
+
+        break; }
 
     }
 
@@ -953,6 +983,7 @@ QString AllManga::getNextPageUrl(const QString &html, const QString &bUrl, int w
     QXmlStreamReader xml(specialParse(html));
     bool first = false;
     QString getUrl;
+    QString nCh;
     //cout<<html<<endl;
     switch(w){
     case 0: {
@@ -971,9 +1002,31 @@ QString AllManga::getNextPageUrl(const QString &html, const QString &bUrl, int w
         }
 
         break; }
-    case 1: {break;}
+
+    case 1: {
+        QFileInfo fi(bUrl);
+        QString fileName = fi.fileName();
+        cout<<fileName;
+
+
+        while (!xml.atEnd() && !xml.hasError()) {
+            xml.readNext();
+            attributes = xml.attributes();
+            if ( first && xml.isStartElement() && xml.name().toString() == "a") {
+                nCh = attributes.value("href").toString();
+            }
+            if ( xml.name().toString() == "div" && attributes.value("class").toString() == "read_img")
+                first = true;
+            if ( xml.isEndElement() && xml.name().toString() == "div" )
+                first = false;
+        }
+        getUrl=bUrl;
+        getUrl=getUrl.replace(fileName,nCh);
+        cout<<getUrl<<endl;
+        break; }
 
     }
+
 
     if (xml.hasError())
     {
@@ -992,7 +1045,7 @@ int AllManga::getLastPage(const QString &html,int w){
     QTextStream cout(stdout); // set cout for console debug
     //QString html = getHtml.getHTML(url);
     QXmlStreamReader xml(specialParse(html));
-    //QString t;
+    QString t;
     bool first = false;
     int lastPage = 0 ;
 
@@ -1015,10 +1068,34 @@ int AllManga::getLastPage(const QString &html,int w){
                 first = false;
         }
 
-        break;
-    }
-    case 1: {break;}
+        break; }
+    case 1: {
+        while (!xml.atEnd() && !xml.hasError()) {
+            xml.readNext();
+            attributes = xml.attributes();
+            if ( first && xml.isStartElement() && xml.name().toString() == "option" && attributes.hasAttribute("value")) {
 
+                //t = xml.readElementText();
+                if( attributes.value("value").toString() != "0"){
+                    //cout<<"Number: "<<xml.readElementText()<<endl;
+                   // t= attributes.value("value").toString();
+                    //cout<<"Number2: "<<t<<endl;
+                    //lastPage = t.toInt();
+                    //cout<<"Number3: "<<lastPage<<endl;
+                    lastPage = xml.readElementText().toInt();
+                }
+
+                //lastPage= t.toInt();
+                //cout<< "LAST:"<<t<<endl;
+
+            }
+            if (xml.isStartElement() && xml.name().toString() == "select" && attributes.hasAttribute("class"))
+                first = true;
+            if ( xml.isEndElement() && xml.name().toString() == "select" )
+                first = false;
+        }
+
+        break; }
     }
 
     if (xml.hasError())
@@ -1064,8 +1141,22 @@ bool AllManga::isChapter(const QString &html,int w){
         break; }
 
     case 1: {
-        isChapter=true;
-        break;}
+        while (!xml.atEnd() && !xml.hasError()) {
+            xml.readNext();
+            attributes = xml.attributes();
+            if ( first && xml.isStartElement() && xml.name().toString() == "option") {
+                //t = xml.readElementText();
+                if(attributes.hasAttribute("selected")) isA=true;
+                //cout<< "Text:"<<t<<endl;
+
+            }
+            if ( attributes.value("class").toString() == "m" && xml.isStartElement() && xml.name().toString() == "select")
+                first = true;
+            if ( xml.isEndElement() && xml.name().toString() == "select" )
+                first = false;
+        }
+
+        break; }
 
     }
 
@@ -1087,10 +1178,11 @@ bool AllManga::isChapter(const QString &html,int w){
 QString AllManga::specialParse(QString input, bool img) {
         if(img) input.replace(QRegularExpression("&(?!amp;)"),"&amp;");
         input.replace(QRegularExpression("&'")," ");
+        input.replace(QRegularExpression("<img .*\\\">"),"Dummy");
 
-        //input.replace(QRegularExpression(">(?!<)"),"&gt;");
-        //input.replace(QRegularExpression("(?!>)<"),"&lt;");
+        input.replace("<br>","<br/>");
         input.replace(">_<","&gt;_&lt;");
+
         return input;
 }
 

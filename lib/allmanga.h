@@ -46,9 +46,11 @@ public:
     QStringList pages = {"http://www.mangareader.net","http://mangafox.me"};
     Q_INVOKABLE QString pageBase(int num) {return pages.at(num);}
 
+    Q_INVOKABLE bool parsed=false;
 private:
     GetHTML getHtml;
     QXmlStreamAttributes attributes;
+
 
 };
 

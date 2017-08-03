@@ -60,7 +60,11 @@ Page {
                 if ( imgModel.count === 1 ) {
                     image.source = imgModel.get(0).src
                 }
-                var nextUrl = allManga.getNextPageUrl(html,allManga.pageBase(source),source)
+                var nextUrl
+                if(source === 1){
+                    nextUrl = allManga.getNextPageUrl(html,chapUrl,source)
+                }
+                else nextUrl = allManga.getNextPageUrl(html,allManga.pageBase(source),source)
 
                 if ( loading === 1 ) {
                     lastPage = allManga.getLastPage(html,source)

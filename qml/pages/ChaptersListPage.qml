@@ -12,9 +12,10 @@ Page {
     GetHTML {
         id: getHTML
         onHtmlChanged: {
-            console.log("S:",source)
+            //console.log("S:",source)
             mangaChapters = allManga.getMangaChapters(html,source)
             chaptersNames = allManga.getChaptersNames(html,source)
+
         }
     }
     MangaReader { id: mangaReader }
@@ -66,6 +67,7 @@ Page {
                 text: name
             }
             onClicked: {
+                console.log(link)
                 pageStack.push(Qt.resolvedUrl("ChapReader.qml"), {chapUrl: link, mainUrl: mainUrl, mangaName: mangaName, imgTitle: name, source: source})
             }
             Timer {
