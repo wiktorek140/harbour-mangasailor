@@ -9,7 +9,11 @@
 # - Summary of changes
 
 #* Tue Mar 31 2015 Billy Halley <ziobilly94@gmail.com> 0.2.1-1
-* Wed Aug 2 2017 Wiktor Strzębała <wiktorek140@tlen.pl> 0.4.4-1
+* Sat Aug 5 2017 Wiktor Strzębała <wiktorek140@tlen.pl> 1.0.1-1
+
+- v1.0.1-1
+-- Added support for reading from mangafox.me
+-- Redownloading
 
 - v0.4.4-1
 -- Fixed var types
