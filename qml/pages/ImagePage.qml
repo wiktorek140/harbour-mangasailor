@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import harbour.mangasailor.FileIO 1.0
 import harbour.mangasailor.GetHTML 1.0
 import harbour.mangasailor.MangaReader 1.0
+import harbour.mangasailor.AllManga 1.0
 
 Page {
     id: page
@@ -10,12 +11,14 @@ Page {
 
     property bool loading: true
     property bool notReleased
+    property int source
 
     FileIO { id: fileIO }
     GetHTML { id: getHTML}
 
 
     MangaReader { id: mangaReader }
+    AllManga { id: allManga }
     //backNavigation: false
 
     allowedOrientations: Orientation.Portrait | Orientation.Landscape
@@ -40,9 +43,9 @@ Page {
     property var mainUrl
     property var mangaName
 
-    property var mangaChapters: mangaReader.getMangaChapters(mainUrl)
+    property var mangaChapters: allManga.getMangaChapters(mainUrl,source)
     onMangaChaptersChanged: console.log("MANGA CHAPTERS\n" + mangaChapters)
-    property var chaptersNames: mangaReader.getChaptersNames(mainUrl)
+    property var chaptersNames: allManga.getChaptersNames(mainUrl,source)
     onChaptersNamesChanged: console.log("CHAPTERS NAMES\n" + chaptersNames)
 
     onStatusChanged: {
@@ -101,9 +104,9 @@ Page {
         currentPage = 0
         image.source = "null"
         chapUrl = url
-        imgTitle = mangaReader.getTitle(url)
+        imgTitle = allManga.getTitle(url)
         html = getHTML.getHTML(url)
-        urls = mangaReader.getUrls(html)
+        urls = allManga.getUrls(html)
         timer.pages = urls.length
         slider.maximumValue = urls.length
         timer.index = 0
@@ -127,10 +130,10 @@ Page {
                 if (typeof current === "undefined")
                     current = 0
                 index = current
-                console.log(index + " " + pages + " " + urls[index])
-                imgSources[index] = mangaReader.getImage(urls[index])
-                imgHeights[index] = mangaReader.getImgHeight(urls[index])
-                imgWidths[index]  = mangaReader.getImgWidth(urls[index])
+                console.log(index + " /" + pages + " /" + urls[index])
+                imgSources[index] = allManga.getImage(urls[index])
+                imgHeights[index] = allManga.getImgHeight(urls[index])
+                imgWidths[index]  = allManga.getImgWidth(urls[index])
                 if ( index === 0) {
                     image.source = imgSources[index]
                     flick.contentHeight = orientation === Orientation.Portrait ? imgHeights[index]/imgWidths[index]*screen.width : imgHeights[index]/imgWidths[index]*screen.height

@@ -31,6 +31,7 @@ Page {
 
     property string chapUrl
     property string mainUrl
+    //property string lastChapter
     property string mangaName
     property string imgTitle
 
@@ -41,16 +42,20 @@ Page {
     property bool isChapter
     property bool nextIsChapter
 
+
     GetHTML {
         id: getHtml
         onHtmlChanged: {
         }
         onFinish: {
             //print(html)
-            //console.log("Na nowy rozdział")
 
             isChapter = allManga.isChapter(html,source)
-            //console.log("Rodzial:",isChapter)
+
+            if (!isChapter && loading<lastPage){
+                get(chapUrl)
+
+            }
             if ( isChapter && ( loading !== lastPage || lastPage === 0 ) ) {
                 loading++
                 var imgSrc = allManga.getImage(html,source)
@@ -60,25 +65,37 @@ Page {
                 if ( imgModel.count === 1 ) {
                     image.source = imgModel.get(0).src
                 }
-                var nextUrl
-                if(source === 1){
-                    nextUrl = allManga.getNextPageUrl(html,chapUrl,source)
-                }
-                else nextUrl = allManga.getNextPageUrl(html,allManga.pageBase(source),source)
 
                 if ( loading === 1 ) {
                     lastPage = allManga.getLastPage(html,source)
                     nextPrev = allManga.getNextPrev(html,allManga.pageBase(source),source)
                     imgTitle = allManga.getChapterName(html,source)
                 }
+
+                var nextUrl
+                if(source === 1){
+                    nextUrl = allManga.getNextPageUrl(html,chapUrl,source)
+                    //console.log(nextUrl)
+                    if(loading === lastPage ){
+                        var pos = nextUrl.indexOf("javascript")
+                        console.log(nextUrl)
+                        if (pos !== -1){
+                            nextUrl = nextPrev[0]
+                        }
+                    }
+                }
+                else nextUrl = allManga.getNextPageUrl(html,allManga.pageBase(source),source)
+
                 if ( loading <= lastPage ) {
-                    //console.log("HUH? IT executed?")
                     get(nextUrl)
+                    if(loading<lastPage)chapUrl=nextUrl
+                    console.log("HUH? IT executed?")
                 }
                 console.log(loading + " /" + lastPage)
             } else {
                 nextIsChapter = isChapter
                 isChapter = true
+
             }
         }
     }
@@ -94,7 +111,7 @@ Page {
         }
     }
 
-    MangaReader { id: mangaReader }
+    //MangaReader { id: mangaReader }
     AllManga { id: allManga }
     ListModel {
         id: imgModel
@@ -339,6 +356,7 @@ Page {
                         pinchArea.resize()
                     } else if ( !loadingTimer.running && nextPrev.length > 1) {
                         imgModel.clear()
+                        if(source === 1)chapUrl=nextPrev[1]
                         getHtml.get(nextPrev[1])
                         loading = 0
                     }
@@ -366,7 +384,7 @@ Page {
                     }  else if ( !loadingTimer.running && nextIsChapter) {
                         console.log("Nowy rozdzial")
                         imgModel.clear()
-                        //preview.currentIndex = 0
+                        if(source === 1)chapUrl=nextPrev[0]
                         getHtml.get(nextPrev[0])
                         preview.currentIndex = 0
                         loading = 0
@@ -530,8 +548,10 @@ Page {
                     rotation: -90
                     onClicked: {
                         imgModel.clear()
-                        if ( nextPrev.length > 1)
+                        if ( nextPrev.length > 1) {
+                            if(source === 1)chapUrl=nextPrev[1]
                             getHtml.get(nextPrev[1])
+                        }
                         loading = 0
                     }
                     opacity: loadingTimer.running
@@ -561,6 +581,7 @@ Page {
                     rotation: 90
                     onClicked: {
                         imgModel.clear()
+                        if(source === 1) chapUrl=nextPrev[0]
                         getHtml.get(nextPrev[0])
                         loading = 0
                     }

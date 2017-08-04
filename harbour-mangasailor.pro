@@ -28,8 +28,6 @@ OTHER_FILES += qml/harbour-mangasailor.qml \
     translations/*.ts \
     harbour-mangasailor.desktop \
     harbour-mangasailor.png \
-    qml/pages/ImagePage.qml \
-    qml/pages/LatestUpdates.qml \
     qml/pages/hot.png \
     rpm/harbour-mangasailor.changes \
     qml/html.html \
