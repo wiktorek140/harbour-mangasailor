@@ -9,7 +9,10 @@
 # - Summary of changes
 
 #* Tue Mar 31 2015 Billy Halley <ziobilly94@gmail.com> 0.2.1-1
-* Sat Aug 5 2017 Wiktor Strzębała <wiktorek140@tlen.pl> 1.0.1-1
+* Sat Aug 5 2017 Wiktor Strzębała <wiktorek140@tlen.pl> 1.0.2-1
+
+- v 1.0.2-1
+-- Refactoring code
 
 - v1.0.1-1
 -- Added support for reading from mangafox.me

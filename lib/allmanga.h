@@ -3,6 +3,7 @@
 
 #include <QStringList>
 #include "getHTML.h"
+#include "lib/pages/mangafox.h"
 
 class GetHTML;
 
@@ -23,32 +24,34 @@ public:
 
     // Manga Page
     Q_INVOKABLE QString getMangaImage(const QString &html,int w=0);
-    Q_INVOKABLE QStringList getInfoHeaders(const QString &html,int w=0);
     Q_INVOKABLE QStringList getInfos(const QString &html,int w=0);
     Q_INVOKABLE QStringList getGenres(const QString &html,int w=0);
     Q_INVOKABLE QString getDescription(const QString &html,int w=0);
 
-    Q_INVOKABLE QStringList getMangaChapters(const QString &url,int w=0);
-    Q_INVOKABLE QStringList getChaptersNames(const QString &url,int w=0);
+    Q_INVOKABLE QStringList getMangaChapters(const QString &html,int w=0);
+    Q_INVOKABLE QStringList getChaptersNames(const QString &html,int w=0);
     Q_INVOKABLE QString getChapterName(const QString &html,int w=0);
 
     // Image Page
-    Q_INVOKABLE QStringList getUrls(const QString &html,int w=0);
-    Q_INVOKABLE QString getImage(const QString &url,int w=0);
-    Q_INVOKABLE QString getImgWidth(const QString &url,int w=0);
-    Q_INVOKABLE QString getImgHeight(const QString &url,int w=0);
-    Q_INVOKABLE QStringList getNextPrev(const QString &url, const QString &bUrl, int w=0);
+    Q_INVOKABLE QString getImage(const QString &html,int w=0);
+    //Q_INVOKABLE QString getImgWidth(const QString &url,int w=0);
+    //Q_INVOKABLE QString getImgHeight(const QString &url,int w=0);
+
+
+    Q_INVOKABLE QStringList getNextPrev(const QString &html, const QString &bUrl, int w=0);
     Q_INVOKABLE QString getNextPageUrl(const QString &html,const QString &bUrl, int w=0);
-    Q_INVOKABLE QString getTitle(const QString &url,int w=0);
+    //Q_INVOKABLE QString getTitle(const QString &url,int w=0);
 
     Q_INVOKABLE int getLastPage(const QString &html, int w=0);
     Q_INVOKABLE bool isChapter(const QString &html, int w=0);
+
     QStringList pages = {"http://www.mangareader.net","http://mangafox.me"};
     Q_INVOKABLE QString pageBase(int num) {return pages.at(num);}
 
     Q_INVOKABLE bool parsed=false;
 private:
     GetHTML getHtml;
+    MangaFox mangaFox;
     QXmlStreamAttributes attributes;
 
 

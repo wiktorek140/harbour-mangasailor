@@ -4,6 +4,7 @@
 #include <QTextStream>
 #include <QStringList>
 
+
 AllManga::AllManga(QObject *parent) :
     QObject(parent)
 {}
@@ -59,7 +60,7 @@ QStringList AllManga::mangaList(const QString &html,int w) {
         break; }
 
     case 1: {
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
 
             if (xml.isStartElement()) {
@@ -89,8 +90,9 @@ QStringList AllManga::mangaList(const QString &html,int w) {
                 if (name == "a")
                     third = false;
             }
-        }
+        }*/
 
+        manga = mangaFox.mangaList(xml);
         break; }
 
     }
@@ -134,6 +136,7 @@ QStringList AllManga::chaptersList(const QString &html ,int w) {
         break;
     }
     case 1: {
+        chapters = mangaFox.chaptersList(xml);
         break;
     }
 
@@ -200,7 +203,7 @@ QStringList AllManga::linksList(const QString &html,int w) {
         break; }
 
     case 1: {
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             if (xml.isStartElement()) {
                 name = xml.name().toString();
@@ -228,7 +231,8 @@ QStringList AllManga::linksList(const QString &html,int w) {
                 if (name == "a")
                     third = false;
             }
-        }
+        }*/
+        links = mangaFox.linksList(xml);
         break; }
     }
 
@@ -245,6 +249,29 @@ QStringList AllManga::linksList(const QString &html,int w) {
 }
 
 QStringList AllManga::mangalinksList(const QString &html,int w) {
+
+    //Need to be fixed probably for sake of latest updates
+
+    /*QStringList links;
+    QString activeMangaLink;
+
+    while (!xml.atEnd() && !xml.hasError()) {
+        xml.readNext();
+        if (xml.isStartElement()) {
+            QString name = xml.name().toString();
+            QXmlStreamAttributes attributes = xml.attributes();
+            if (name == "td" && !xml.attributes().hasAttribute("class")) {
+                xml.readNext();
+                attributes = xml.attributes();
+                activeMangaLink = xml.attributes().value("href").toString();
+            }
+            if(xml.attributes().hasAttribute("class") && xml.attributes().value("class").toString() == "chaptersrec") {
+                links.append(activeMangaLink);
+            }
+        }
+    }
+    return links;
+    */
 
     return linksList(html,w);
 }
@@ -294,7 +321,7 @@ QStringList AllManga::iconsList(const QString &html,int w) {
         break; }
 
     case 1: {
-        while (!xml.atEnd() && !xml.hasError() ) {
+        /*while (!xml.atEnd() && !xml.hasError() ) {
             xml.readNext();
             if (xml.isStartElement()) {
                 name = xml.name().toString();
@@ -321,7 +348,9 @@ QStringList AllManga::iconsList(const QString &html,int w) {
                 if (name == "a")
                     third = false;
             }
-        }
+        }*/
+
+        icons = mangaFox.iconsList(xml);
         break; }
 
     }
@@ -360,7 +389,7 @@ QString AllManga::getMangaImage(const QString &html,int w) {
         break; }
     case 1: {
 
-        while (!xml.atEnd() && !xml.hasError() ) {
+        /*while (!xml.atEnd() && !xml.hasError() ) {
             xml.readNext();
             if (xml.isStartElement()) {
                 name = xml.name().toString();
@@ -378,7 +407,8 @@ QString AllManga::getMangaImage(const QString &html,int w) {
                     first = false;
 
             }
-        }
+        }*/
+        imageUrl = mangaFox.getMangaImage(xml);
         break; }
 
     }
@@ -393,37 +423,6 @@ QString AllManga::getMangaImage(const QString &html,int w) {
     }
 
     return imageUrl;
-}
-
-QStringList AllManga::getInfoHeaders(const QString &html,int w) {
-    QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(specialParse(html));
-    QStringList headers;
-
-    switch(w){
-    case 0: {
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            attributes = xml.attributes();
-            if( attributes.value("class").toString() == "propertytitle" )
-                headers.append(xml.readElementText());
-        }
-
-        break;
-    }
-    case 1: {break;}
-
-    }
-
-    if (xml.hasError())
-    {
-        cout << "XML error7: " << xml.errorString() << endl;
-    }
-    else if (xml.atEnd())
-    {
-        cout << "Reached end, done" << endl;
-    }
-    return headers;
 }
 
 QStringList AllManga::getInfos(const QString &html,int w) {
@@ -451,7 +450,7 @@ QStringList AllManga::getInfos(const QString &html,int w) {
         break;
     }
     case 1: {
-        while (!xml.atEnd() && !xml.hasError() ) {
+        /*while (!xml.atEnd() && !xml.hasError() ) {
             xml.readNext();
             if (xml.isStartElement()) {
                 name = xml.name().toString();
@@ -482,7 +481,9 @@ QStringList AllManga::getInfos(const QString &html,int w) {
                     second = false;
 
             }
-        }
+        }*/
+
+        infos = mangaFox.getInfos(xml);
         break; }
     }
 
@@ -516,7 +517,9 @@ QStringList AllManga::getGenres(const QString &html,int w) {
 
         break;
     }
-    case 1: {break;}
+    case 1: {
+        genres = mangaFox.getGenres(xml);
+        break;}
 
     }
 
@@ -547,7 +550,9 @@ QString AllManga::getDescription(const QString &html,int w) {
         }
         break;
     }
-    case 1: {break;}
+    case 1: {
+        description = mangaFox.getDescription(xml);
+        break;}
 
     }
 
@@ -589,7 +594,7 @@ QStringList AllManga::getMangaChapters(const QString &html,int w) {
 
     case 1: {
 
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             //cout<< xml.name().toString()<<endl;
             //cout<< xml.attributes().value("id")<<endl;
@@ -619,7 +624,8 @@ QStringList AllManga::getMangaChapters(const QString &html,int w) {
         }
 
         for(int k=0, s=urls.size(), max=(s/2); k<max; k++) urls.swap(k,s-(1+k));
-
+        */
+        urls = mangaFox.getMangaChapters(xml);
         break; }
 
     }
@@ -665,7 +671,7 @@ QStringList AllManga::getChaptersNames(const QString &html,int w) {
         break;
     }
     case 1: {
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
 
             if(xml.isStartElement()){
@@ -694,8 +700,9 @@ QStringList AllManga::getChaptersNames(const QString &html,int w) {
 
         }
 
-        for(int k=0, s=names.size(), max=(s/2); k<max; k++) names.swap(k,s-(1+k));
+        for(int k=0, s=names.size(), max=(s/2); k<max; k++) names.swap(k,s-(1+k));*/
 
+        names = mangaFox.getChaptersNames(xml);
         break; }
 
     }
@@ -735,7 +742,7 @@ QString AllManga::getChapterName(const QString &html,int w) {
         break; }
     case 1: {
 
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             attributes = xml.attributes();
             if ( first && xml.isStartElement() && xml.name().toString() == "a" && attributes.hasAttribute("href")) {
@@ -745,7 +752,8 @@ QString AllManga::getChapterName(const QString &html,int w) {
                 first = true;
             if ( xml.isEndElement() && xml.name().toString() == "h1" )
                 first = false;
-        }
+        }*/
+        name = mangaFox.getChapterName(xml);
         break; }
 
     }
@@ -759,39 +767,6 @@ QString AllManga::getChapterName(const QString &html,int w) {
         cout << "Reached end, done" << endl;
     }
     return name;
-}
-
-QStringList AllManga::getUrls(const QString &html,int w) {
-    QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(specialParse(html));
-    QStringList urls;
-
-    switch(w){
-    case 0: {
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            if ( xml.isStartElement() && xml.name().toString() == "option") {
-                attributes = xml.attributes();
-                urls.append(attributes.value("value").toString());
-            }
-        }
-
-        break;
-    }
-    case 1: {break;}
-
-    }
-
-
-    if (xml.hasError())
-    {
-        cout << "XML error13: " << xml.errorString() << endl;
-    }
-    else if (xml.atEnd())
-    {
-        cout << "Reached end, done" << endl;
-    }
-    return urls;
 }
 
 QString AllManga::getImage(const QString &html,int w) {
@@ -813,14 +788,14 @@ QString AllManga::getImage(const QString &html,int w) {
     }
     case 1: {
 
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             if ( xml.isStartElement() && xml.name().toString() == "img" && xml.attributes().value("id").toString() == "image") {
                 attributes = xml.attributes();
                 imageUrl = attributes.value("src").toString();
             }
-        }
-
+        }*/
+        imageUrl = mangaFox.getImage(xml);
         break; }
 
     }
@@ -835,74 +810,6 @@ QString AllManga::getImage(const QString &html,int w) {
         cout << "Reached end, done" << endl;
     }
     return imageUrl;
-}
-
-QString AllManga::getImgWidth(const QString &html,int w) {
-    QTextStream cout(stdout); // set cout for console debug
-    //QString fullUrl = "http://www.mangareader.net" + url;
-    //QString html = getHtml.getHTML(fullUrl);
-    QXmlStreamReader xml(specialParse(html));
-    QString imageWidth;
-
-    switch(w){
-    case 0: {
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            if ( xml.name().toString() == "img") {
-                attributes = xml.attributes();
-                imageWidth.append(attributes.value("width").toString());
-            }
-        }
-
-        break;
-    }
-    case 1: {break;}
-
-    }
-
-
-    if (xml.hasError())
-    {
-        cout << "XML error15: " << xml.errorString() << endl;
-    }
-    else if (xml.atEnd())
-    {
-        cout << "Reached end, done" << endl;
-    }
-    return imageWidth;
-}
-
-QString AllManga::getImgHeight(const QString &html,int w) {
-    QTextStream cout(stdout); // set cout for console debug
-    QXmlStreamReader xml(specialParse(html));
-    QString imageHeight;
-
-    switch(w){
-    case 0: {
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            if ( xml.name().toString() == "img") {
-                attributes = xml.attributes();
-                imageHeight.append(attributes.value("height").toString());
-            }
-        }
-
-        break;
-    }
-    case 1: {break;}
-
-    }
-
-
-    if (xml.hasError())
-    {
-        cout << "XML error16: " << xml.errorString() << endl;
-    }
-    else if (xml.atEnd())
-    {
-        cout << "Reached end, done" << endl;
-    }
-    return imageHeight;
 }
 
 QStringList AllManga::getNextPrev(const QString &html, const QString &bUrl, int w) {
@@ -930,7 +837,7 @@ QStringList AllManga::getNextPrev(const QString &html, const QString &bUrl, int 
 
         break; }
     case 1: {
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             attributes = xml.attributes();
             if ( first && xml.isStartElement() && xml.name().toString() == "a") {
@@ -948,8 +855,8 @@ QStringList AllManga::getNextPrev(const QString &html, const QString &bUrl, int 
             //getUrl= urls.at(0);
             //urls.replace(0,urls.at(1));
             //urls.replace(1,getUrl);
-        }
-
+        }*/
+        urls = mangaFox.getNextPrev(xml,bUrl);
         break; }
 
     }
@@ -965,49 +872,6 @@ QStringList AllManga::getNextPrev(const QString &html, const QString &bUrl, int 
     }
     //cout << "1:"<<urls.at(0)<< endl<<"2: "<<urls.at(1)<<endl;
     return urls;
-}
-
-QString AllManga::getTitle(const QString &url,int w) {
-    QTextStream cout(stdout); // set cout for console debug
-    QString html = getHtml.getHTML(url);
-    QXmlStreamReader xml(specialParse(html));
-    QString title;
-
-    switch(w){
-    case 0: {
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            if ( xml.isStartElement() && xml.name().toString() == "h1") {
-                title.append(xml.readElementText());
-            }
-        }
-
-        break;
-    }
-    case 1: {
-
-        while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            if ( xml.isStartElement() && xml.name().toString() == "h1") {
-                title.append(xml.readElementText());
-            }
-        }
-
-
-
-        break; }
-
-    }
-
-    if (xml.hasError())
-    {
-        cout << "XML error18: " << xml.errorString() << endl;
-    }
-    else if (xml.atEnd())
-    {
-        cout << "Reached end, done" << endl;
-    }
-    return title;
 }
 
 
@@ -1040,7 +904,7 @@ QString AllManga::getNextPageUrl(const QString &html, const QString &bUrl, int w
         break; }
 
     case 1: {
-        QFileInfo fi(bUrl);
+        /*QFileInfo fi(bUrl);
         QString fileName = fi.fileName();
         //cout<<fileName<<endl;
 
@@ -1058,7 +922,8 @@ QString AllManga::getNextPageUrl(const QString &html, const QString &bUrl, int w
         }
         getUrl=bUrl;
         getUrl=getUrl.replace(fileName,nCh);
-        //cout<<getUrl<<endl;
+        //cout<<getUrl<<endl;*/
+        getUrl = mangaFox.getNextPageUrl(xml,bUrl);
         break; }
 
     }
@@ -1106,7 +971,7 @@ int AllManga::getLastPage(const QString &html,int w){
 
         break; }
     case 1: {
-        while (!xml.atEnd() && !xml.hasError()) {
+        /*while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             attributes = xml.attributes();
             if ( first && xml.isStartElement() && xml.name().toString() == "option" && attributes.hasAttribute("value")) {
@@ -1129,8 +994,8 @@ int AllManga::getLastPage(const QString &html,int w){
                 first = true;
             if ( xml.isEndElement() && xml.name().toString() == "select" )
                 first = false;
-        }
-
+        }*/
+        lastPage = mangaFox.getLastPage(xml);
         break; }
     }
 
@@ -1177,23 +1042,8 @@ bool AllManga::isChapter(const QString &html,int w){
         break; }
 
     case 1: {
+
         /*while (!xml.atEnd() && !xml.hasError()) {
-            xml.readNext();
-            attributes = xml.attributes();
-            if ( first && xml.isStartElement() && xml.name().toString() == "option") {
-                //t = xml.readElementText();
-                if(attributes.hasAttribute("selected")) isA=true;
-                //cout<< "Text:"<<t<<endl;
-
-            }
-            if ( attributes.hasAttribute("class") && xml.isStartElement() && xml.name().toString() == "select")
-                first = true;
-            if ( xml.isEndElement() && xml.name().toString() == "select" )
-                first = false;
-                //break
-        }*/
-
-        while (!xml.atEnd() && !xml.hasError()) {
             xml.readNext();
             if ( xml.isStartElement() && xml.name().toString() == "img" && xml.attributes().value("id").toString() == "image") {
                 //attributes = xml.attributes();
@@ -1201,8 +1051,9 @@ bool AllManga::isChapter(const QString &html,int w){
                 isA=true;
             }
             if (xml.isStartElement()){}
-        }
+        }*/
 
+        isChapter = mangaFox.isChapter(xml);
         break; }
 
     }

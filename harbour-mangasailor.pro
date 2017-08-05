@@ -19,7 +19,9 @@ SOURCES += src/harbour-mangasailor.cpp \
     lib/mangareader.cpp \
     lib/fileIO.cpp \
     lib/cachemanager.cpp \
-    lib/allmanga.cpp
+    lib/allmanga.cpp \
+    lib/pages/mangafox.cpp \
+    lib/pages/mangareader_net.cpp
 
 OTHER_FILES += qml/harbour-mangasailor.qml \
     qml/cover/CoverPage.qml \
@@ -49,11 +51,14 @@ HEADERS += \
     lib/mangareader.h \
     lib/fileIO.h \
     lib/cachemanager.h \
-    lib/allmanga.h
+    lib/allmanga.h \
+    lib/pages/mangafox.h \
+    lib/pages/mangareader_net.h
 
 QT += core
 
 DISTFILES += \
     qml/pages/AllMangas.qml \
     qml/pages/ChapReader.qml \
-    qml/pages/SecondPage.qml
+    qml/pages/SecondPage.qml \
+    translations/harbour-mangasailor-pl.ts

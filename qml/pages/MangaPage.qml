@@ -12,7 +12,7 @@ Page {
     GetHTML {
         id: getHTML
         onHtmlChanged: {
-            console.log(source)
+            //console.log(source)
             imageUrl = allManga.getMangaImage(html,source)
             infos = allManga.getInfos(html,source)
             genres = allManga.getGenres(html,source)

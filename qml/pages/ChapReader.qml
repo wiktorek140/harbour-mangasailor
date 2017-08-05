@@ -78,7 +78,7 @@ Page {
                     //console.log(nextUrl)
                     if(loading === lastPage ){
                         var pos = nextUrl.indexOf("javascript")
-                        console.log(nextUrl)
+                        //console.log(nextUrl)
                         if (pos !== -1){
                             nextUrl = nextPrev[0]
                         }
@@ -89,7 +89,7 @@ Page {
                 if ( loading <= lastPage ) {
                     get(nextUrl)
                     if(loading<lastPage)chapUrl=nextUrl
-                    console.log("HUH? IT executed?")
+                    //console.log("HUH? IT executed?")
                 }
                 console.log(loading + " /" + lastPage)
             } else {

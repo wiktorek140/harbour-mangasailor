@@ -230,7 +230,7 @@ Page {
         PullDownMenu {
 
             MenuItem {
-                text: "Refresh All"
+                text: qsTr("Refresh All")
                 onClicked: getHTML.get(avaiablePages[source])
             }
             MenuItem {
@@ -264,7 +264,7 @@ Page {
                 x: Theme.paddingMedium
                 font.pixelSize: Theme.fontSizeLarge
                 color: Theme.secondaryHighlightColor
-                text: qsTr("Latest Updates")
+                text: qsTr("All list")
             }
             SearchField {
                 id: searchField
